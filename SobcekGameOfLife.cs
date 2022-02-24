@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace GOLStartUpTemplate1
 {
-    public partial class Form1 : Form
+    public partial class SobcekGameOfLife : Form
     {
         static int xCellCount;
         static int yCellCount;
@@ -36,12 +36,12 @@ namespace GOLStartUpTemplate1
 
         string filePath = "";
 
-        public Form1()
+        public SobcekGameOfLife()
         {
             InitializeComponent();
 
-            // Setup the timer
-            ReadSettings(); //reads all settings and updates the local equivilent
+           
+            ReadSettings(); //reads all settings 
 
 
             universe = new bool[xCellCount, yCellCount]; //initializes the universe
@@ -54,8 +54,8 @@ namespace GOLStartUpTemplate1
             UpdateBottomText();
         }
 
-        // Calculate the next generation of cells
-        private void UpdateBottomText() //updates the text at the bottom of the screen
+        
+        private void UpdateBottomText() 
         {
             string generationText = "";
             generationText = "Generations = " + generations.ToString() + "     ";
@@ -121,24 +121,17 @@ namespace GOLStartUpTemplate1
         private void NextGeneration()
         {
 
-            //creates a list to hold the cells that need to be toggled
             List<CellPoint> cellsToToggle = new List<CellPoint>();
-            //clears the lsit, then adds to it
             GameRules.CalculateRules(ref universe, cellsToToggle);
 
-            //iterates through all cells to be toggled
             for (int i = 0; i < cellsToToggle.Count; i++)
             {
                 universe[cellsToToggle[i].cellX, cellsToToggle[i].cellY] = cellsToToggle[i].cellState;
             }
 
-
-
-
             // Increment generation count
             generations++;
 
-            // Update status strip generations
             UpdateBottomText();
 
             graphicsPanel1.Invalidate();
@@ -182,7 +175,7 @@ namespace GOLStartUpTemplate1
 
                     if (showHUD)
                     {
-                        Brush brush = new SolidBrush(Color.Red);
+                        Brush brush = new SolidBrush(Color.PaleVioletRed);
                         PointF location = new PointF(1, graphicsPanel1.ClientSize.Height - 30);
                         string toroid = GameRules.isToroidal ? "Toroidal" : "Finite";
                         string[] HUDSentences = new string[]
@@ -270,7 +263,7 @@ namespace GOLStartUpTemplate1
                 sw.WriteLine(currentRow);
             }
             sw.Close();
-        } //logic for saving the file given a path
+        } 
         private void SaveAsFile()
         {
             SaveFileDialog dlg = new SaveFileDialog();
@@ -282,11 +275,10 @@ namespace GOLStartUpTemplate1
             {
                 SaveFile(dlg.FileName);
             }
-        } //logic for saving the file using save as
+        } 
 
         private void newToolStripButton_Click(object sender, EventArgs e) //new file
         {
-            //turns every cell off
             for (int i = 0; i < universe.GetLength(0); i++)
             {
                 for (int j = 0; j < universe.GetLength(1); j++)
@@ -295,36 +287,31 @@ namespace GOLStartUpTemplate1
                 }
             }
 
-            //resets the settings
             generations = 0;
             filePath = "";
-            // GameRules.isToroidal = false;
-
-            //turns off the timer if its on
             timer.Enabled = false;
 
-            //resets the screen
             graphicsPanel1.Invalidate();
             UpdateBottomText();
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(filePath)) //has the path, save normally
+            if (!string.IsNullOrEmpty(filePath)) 
             {
                 SaveFile(filePath);
             }
-            else //does not have a path, perform save as
+            else 
             {
                 SaveAsFile();
             }
-        } //save
+        } 
 
-        //save
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) //save as
+        
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)  
         {
             SaveAsFile();
         }
-        private void openToolStripMenuItem_Click(object sender, EventArgs e) //open file
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)  
         {
             OpenFileDialog dlg = new OpenFileDialog();
 
@@ -337,13 +324,13 @@ namespace GOLStartUpTemplate1
                 int rowCount = 0;
                 int columnCount = 0;
 
-                while (!sr.EndOfStream) //loop to count how many rows exist in the file loaded
+                while (!sr.EndOfStream)  
                 {
                     string currentRow = sr.ReadLine();
-                    if (!string.IsNullOrEmpty(currentRow)) //ensure the line isnt empty
+                    if (!string.IsNullOrEmpty(currentRow))  
                     {
 
-                        if ((currentRow[0] == '.') || (currentRow[0] == 'O')) //makes sure there is not a comment
+                        if ((currentRow[0] == '.') || (currentRow[0] == 'O'))  
                         {
                             rowCount++;
                             columnCount = currentRow.Length;
@@ -351,17 +338,17 @@ namespace GOLStartUpTemplate1
                     }
                 }
 
-                if (universe.GetLength(0) < columnCount && universe.GetLength(1) > rowCount) //if statement to see if the x is longer than currently exists
+                if (universe.GetLength(0) < columnCount && universe.GetLength(1) > rowCount) 
                 {
                     universe = new bool[columnCount, universe.GetLength(1)];
                     xCellCount = columnCount;
                 }
-                else if ((universe.GetLength(0) > columnCount && universe.GetLength(1) < rowCount)) //checks if the y is longer than current
+                else if ((universe.GetLength(0) > columnCount && universe.GetLength(1) < rowCount)) 
                 {
                     universe = new bool[universe.GetLength(0), rowCount];
                     yCellCount = rowCount;
                 }
-                else // else to resize both x and y in the array
+                else  
                 {
                     universe = new bool[columnCount, rowCount];
                     xCellCount = columnCount;
@@ -374,17 +361,16 @@ namespace GOLStartUpTemplate1
                 sr = new StreamReader(dlg.FileName);
 
                 int gCurrentRow = 0;
-                while (!sr.EndOfStream) //while loop that actually reads the file
+                while (!sr.EndOfStream)  
                 {
                     string srCurrentRow = sr.ReadLine();
-                    if (!string.IsNullOrEmpty(srCurrentRow)) //ensure the line isnt empty
+                    if (!string.IsNullOrEmpty(srCurrentRow))  
                     {
 
-                        if ((srCurrentRow[0] != '/') && !(srCurrentRow[0] == (char)0)) //makes sure there is not a comment
-                        {
-                            //read all the data
+                        if ((srCurrentRow[0] != '/') && !(srCurrentRow[0] == (char)0))  
+                        { 
 
-                            for (int i = 0; i < srCurrentRow.Length; i++) //loops through the entire string and puts that into universe
+                            for (int i = 0; i < srCurrentRow.Length; i++)  
                             {
                                 if (srCurrentRow[i] == 'O')
                                 {
@@ -411,17 +397,17 @@ namespace GOLStartUpTemplate1
             showGrid = !showGrid;
             graphicsPanel1.Invalidate();
 
-        } //toggles grid
+        }  
         private void toggleNeighborCountToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showNeighbors = !showNeighbors;
             graphicsPanel1.Invalidate();
-        } //toggles neighbor count
+        }  
         private void toggleHUDToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showHUD = !showHUD;
             graphicsPanel1.Invalidate();
-        } //toggled HUD
+        }  
         private void PauseButton_Click(object sender, EventArgs e)
         {
             timer.Enabled = false;
@@ -435,7 +421,7 @@ namespace GOLStartUpTemplate1
         {
             NextGeneration();
         }
-        private void RandomizeCells() //randomizes all cells
+        private void RandomizeCells()  
         {
             Random randy = new Random(seed);
 
@@ -457,11 +443,11 @@ namespace GOLStartUpTemplate1
             UpdateBottomText();
         }
 
-        private void randomizeCellsToolStripMenuItem_Click(object sender, EventArgs e) //randomize from current seed
+        private void randomizeCellsToolStripMenuItem_Click(object sender, EventArgs e)  
         {
             RandomizeCells();
         }
-        private void fromRandomSeedToolStripMenuItem_Click(object sender, EventArgs e) //randomizes from a random seed
+        private void fromRandomSeedToolStripMenuItem_Click(object sender, EventArgs e)  
         {
             Random randy = new Random(seed);
             seed = randy.Next(0, 1073741824);
@@ -474,8 +460,8 @@ namespace GOLStartUpTemplate1
             seed = DateTime.Now.Millisecond;
 
             RandomizeCells();
-        } //randomizes from the current time
-        private void settingsToolStripMenuItem1_Click(object sender, EventArgs e) //Displays the randomize menu
+        }  
+        private void settingsToolStripMenuItem1_Click(object sender, EventArgs e)  
         {
             RandomizeForm dlg = new RandomizeForm();
 
@@ -489,7 +475,7 @@ namespace GOLStartUpTemplate1
                 graphicsPanel1.Invalidate();
             }
         }
-        private void randomizeSeedCellsToolStripMenuItem_Click(object sender, EventArgs e) //randomizes the settings
+        private void randomizeSeedCellsToolStripMenuItem_Click(object sender, EventArgs e) 
         {
             Random randy = new Random((int)DateTime.Now.Ticks);
 
@@ -497,7 +483,7 @@ namespace GOLStartUpTemplate1
             randomizeCellsDensity = randy.Next(0, 101);
             graphicsPanel1.Invalidate();
         }
-        private void ReadSettings() //reads all settings and invalidates and updates the text
+        private void ReadSettings() 
         {
             timer.Interval = Properties.Settings.Default.TimerInterval;
             cellColor = Properties.Settings.Default.CellColor;
@@ -509,7 +495,7 @@ namespace GOLStartUpTemplate1
             graphicsPanel1.Invalidate();
             UpdateBottomText();
         }
-        private void WriteSettings() //updates all the settings
+        private void WriteSettings() 
         {
             Properties.Settings.Default.TimerInterval = timer.Interval;
             Properties.Settings.Default.CellColor = cellColor;
@@ -518,14 +504,14 @@ namespace GOLStartUpTemplate1
             Properties.Settings.Default.YCells = yCellCount;
             Properties.Settings.Default.PanelColor = graphicsPanel1.BackColor;
         }
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e) //event when the form is closed
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e) 
         {
             WriteSettings();
 
             Properties.Settings.Default.Save();
         }
 
-        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e) //shows dialog to change background color
+        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e) 
         {
             ColorDialog dlg = new ColorDialog();
 
@@ -538,7 +524,7 @@ namespace GOLStartUpTemplate1
                 graphicsPanel1.Invalidate();
             }
         }
-        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)//shows dialog to change cell color
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorDialog dlg = new ColorDialog();
 
@@ -551,7 +537,7 @@ namespace GOLStartUpTemplate1
                 graphicsPanel1.Invalidate();
             }
         }
-        private void aliveCellColorToolStripMenuItem_Click(object sender, EventArgs e)//shows dialog to change grid color
+        private void aliveCellColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorDialog dlg = new ColorDialog();
 
@@ -565,7 +551,7 @@ namespace GOLStartUpTemplate1
             }
         }
 
-        private void toggleModeToolStripMenuItem1_Click(object sender, EventArgs e)//toggles finite and toroidal
+        private void toggleModeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             GameRules.isToroidal = !GameRules.isToroidal;
             UpdateBottomText();
@@ -583,7 +569,7 @@ namespace GOLStartUpTemplate1
 
         }
 
-        private void settingsToolStripMenuItem2_Click(object sender, EventArgs e) //shows the settings dialog including timer interval and universe size
+        private void settingsToolStripMenuItem2_Click(object sender, EventArgs e) 
         {
 
             SettingsForm dlg = new SettingsForm();
@@ -613,7 +599,7 @@ namespace GOLStartUpTemplate1
 
 
         }
-        private void resetToolStripMenuItem_Click(object sender, EventArgs e) //reset the settings
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e) 
         {
             DialogResult r = MessageBox.Show("This will reset all settings and delete the universe. Do you want to continue?", "Warning", MessageBoxButtons.YesNo);
 
@@ -624,7 +610,7 @@ namespace GOLStartUpTemplate1
                 ReadSettings();
             }
         }
-        private void reloadToolStripMenuItem_Click(object sender, EventArgs e) //reloads the settings
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e) 
         {
             DialogResult r = MessageBox.Show("This will reset all settings and delete the universe. Do you want to continue?", "Warning", MessageBoxButtons.YesNo);
 

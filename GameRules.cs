@@ -54,8 +54,6 @@ namespace GOLStartUpTemplate1
 
 
 
-                    //int xPos = (x + i) % universe.GetLength(0);
-                    //int yPos = (y + j) % universe.GetLength(1);
                     if (universe[xCheck, yCheck])
                     {
                         if (!(i == 0 && j == 0))
@@ -88,24 +86,21 @@ namespace GOLStartUpTemplate1
                     }
                     #endregion
 
-                    if (universe[i, j])//cell is alive
+                    if (universe[i, j])
                     {
                         if (temp == 2 || temp == 3)
                         {
-                            //keeps the cell on
                             cellsToToggle.Add(new CellPoint(i, j, true));
                         }
                         else
                         {
-                            //turns the cell off
                             cellsToToggle.Add(new CellPoint(i, j, false));
                         }
                     }
-                    else//cell is dead
+                    else
                     {
                         if (temp == 3)
                         {
-                            //turns the cell on
                             cellsToToggle.Add(new CellPoint(i, j, true));
                         }
                     }
@@ -120,7 +115,6 @@ namespace GOLStartUpTemplate1
 
     public class CellPoint
     {
-        //holds the x, y, and state of a cell
         public int cellX = 0;
         public int cellY = 0;
         public bool cellState = false;
